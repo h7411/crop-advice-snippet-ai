@@ -14,7 +14,7 @@ This project involves building a custom GPT model from scratch to provide agricu
 
 Tick these off as you go, and commit after each one.
 
-- [ ] **1. Collect a small corpus of agricultural advice, crop guides, or farming articles.**  
+- [x] **1. Collect a small corpus of agricultural advice, crop guides, or farming articles.**  
       Hint: Gather and clean raw text data from agricultural sources.
 - [ ] **2. Implement the byte-pair tokenizer and generate embeddings from the agricultural text.**  
       Hint: Apply the byte-pair tokenizer and create embeddings from your text corpus.

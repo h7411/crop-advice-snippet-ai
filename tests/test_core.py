@@ -10,9 +10,15 @@ from app.core import (
     milestone_4, milestone_5, milestone_6,
 )
 
-@pytest.mark.skip(reason="remove this line when you start milestone 1")
 def test_milestone_1():
-    raise NotImplementedError("write the test for milestone 1")
+    corpus = milestone_1()
+    assert isinstance(corpus, AgriculturalCorpus)
+    assert len(corpus.documents) >= 5
+    stats = corpus.get_stats()
+    assert stats["num_words"] > 100
+    assert "wheat" in corpus.cleaned_text.lower()
+    assert "tomato" in corpus.cleaned_text.lower()
+    assert "rice" in corpus.cleaned_text.lower()
 
 @pytest.mark.skip(reason="remove this line when you start milestone 2")
 def test_milestone_2():
