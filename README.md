@@ -18,7 +18,7 @@ Tick these off as you go, and commit after each one.
       Hint: Gather and clean raw text data from agricultural sources.
 - [x] **2. Implement the byte-pair tokenizer and generate embeddings from the agricultural text.**  
       Hint: Apply the byte-pair tokenizer and create embeddings from your text corpus.
-- [ ] **3. Build the causal self-attention mechanism and assemble the transformer block.**  
+- [x] **3. Build the causal self-attention mechanism and assemble the transformer block.**  
       Hint: Implement the causal self-attention mechanism and assemble the transformer block.
 - [ ] **4. Train the GPT model using the agricultural text data.**  
       Hint: Train your custom GPT model using the prepared agricultural text data.

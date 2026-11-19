@@ -34,9 +34,16 @@ def test_milestone_2():
     emb = embeddings(idx)
     assert emb.shape == (1, 5, embeddings.tok_embed.embedding_dim)
 
-@pytest.mark.skip(reason="remove this line when you start milestone 3")
 def test_milestone_3():
-    raise NotImplementedError("write the test for milestone 3")
+    block = milestone_3()
+    assert isinstance(block, TransformerBlock)
+    x = torch.randn(2, 8, block.attn.d_model)
+    out = block(x)
+    assert out.shape == x.shape
+    attn = block.attn
+    assert attn.bias.shape[-1] >= 8
+    assert attn.bias[0, 0, 0, 1] == 0
+    assert attn.bias[0, 0, 1, 0] == 1
 
 @pytest.mark.skip(reason="remove this line when you start milestone 4")
 def test_milestone_4():

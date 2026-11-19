@@ -158,8 +158,62 @@ def milestone_2() -> Tuple[BPETokenizer, GPTEmbeddings]:
     embeddings = GPTEmbeddings(vocab_size=len(tokenizer.vocab), d_model=32, max_seq_len=64)
     return tokenizer, embeddings
 
-def milestone_3():
-    raise NotImplementedError("TODO(milestone 3)")
+
+import math
+from torch.nn import functional as F
+
+class CausalSelfAttention(nn.Module):
+    def __init__(self, d_model: int, n_heads: int, block_size: int, dropout: float = 0.0):
+        super().__init__()
+        assert d_model % n_heads == 0, "d_model must be divisible by n_heads"
+        self.d_model = d_model
+        self.n_heads = n_heads
+        self.head_dim = d_model // n_heads
+        self.block_size = block_size
+        self.c_attn = nn.Linear(d_model, 3 * d_model)
+        self.c_proj = nn.Linear(d_model, d_model)
+        self.dropout = nn.Dropout(dropout)
+        self.register_buffer(
+            "bias",
+            torch.tril(torch.ones(block_size, block_size)).view(1, 1, block_size, block_size),
+        )
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        B, T, C = x.size()
+        q, k, v = self.c_attn(x).split(self.d_model, dim=2)
+        k = k.view(B, T, self.n_heads, self.head_dim).transpose(1, 2)
+        q = q.view(B, T, self.n_heads, self.head_dim).transpose(1, 2)
+        v = v.view(B, T, self.n_heads, self.head_dim).transpose(1, 2)
+
+        att = (q @ k.transpose(-2, -1)) * (1.0 / math.sqrt(self.head_dim))
+        att = att.masked_fill(self.bias[:, :, :T, :T] == 0, float("-inf"))
+        att = F.softmax(att, dim=-1)
+        att = self.dropout(att)
+        y = att @ v
+        y = y.transpose(1, 2).contiguous().view(B, T, C)
+        return self.c_proj(y)
+
+class TransformerBlock(nn.Module):
+    def __init__(self, d_model: int, n_heads: int, block_size: int, dropout: float = 0.0):
+        super().__init__()
+        self.ln1 = nn.LayerNorm(d_model)
+        self.attn = CausalSelfAttention(d_model, n_heads, block_size, dropout)
+        self.ln2 = nn.LayerNorm(d_model)
+        self.mlp = nn.Sequential(
+            nn.Linear(d_model, 4 * d_model),
+            nn.GELU(),
+            nn.Linear(4 * d_model, d_model),
+            nn.Dropout(dropout),
+        )
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        x = x + self.attn(self.ln1(x))
+        x = x + self.mlp(self.ln2(x))
+        return x
+
+def milestone_3() -> TransformerBlock:
+    return TransformerBlock(d_model=32, n_heads=4, block_size=64)
+
 
 def milestone_4():
     raise NotImplementedError("TODO(milestone 4)")
