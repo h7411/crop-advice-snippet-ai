@@ -20,9 +20,19 @@ def test_milestone_1():
     assert "tomato" in corpus.cleaned_text.lower()
     assert "rice" in corpus.cleaned_text.lower()
 
-@pytest.mark.skip(reason="remove this line when you start milestone 2")
 def test_milestone_2():
-    raise NotImplementedError("write the test for milestone 2")
+    tokenizer, embeddings = milestone_2()
+    assert isinstance(tokenizer, BPETokenizer)
+    assert len(tokenizer.vocab) > 20
+    assert len(tokenizer.merges) > 0
+    sample_text = "Wheat needs soil"
+    encoded = tokenizer.encode(sample_text)
+    assert len(encoded) > 0
+    decoded = tokenizer.decode(encoded)
+    assert "Wheat" in decoded
+    idx = torch.tensor([encoded[:5]], dtype=torch.long)
+    emb = embeddings(idx)
+    assert emb.shape == (1, 5, embeddings.tok_embed.embedding_dim)
 
 @pytest.mark.skip(reason="remove this line when you start milestone 3")
 def test_milestone_3():
