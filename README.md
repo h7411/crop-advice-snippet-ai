@@ -20,7 +20,7 @@ Tick these off as you go, and commit after each one.
       Hint: Apply the byte-pair tokenizer and create embeddings from your text corpus.
 - [x] **3. Build the causal self-attention mechanism and assemble the transformer block.**  
       Hint: Implement the causal self-attention mechanism and assemble the transformer block.
-- [ ] **4. Train the GPT model using the agricultural text data.**  
+- [x] **4. Train the GPT model using the agricultural text data.**  
       Hint: Train your custom GPT model using the prepared agricultural text data.
 - [ ] **5. Implement a text generation function to provide concise advice snippets.**  
       Hint: Develop the text generation function to produce advice snippets.

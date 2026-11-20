@@ -45,9 +45,16 @@ def test_milestone_3():
     assert attn.bias[0, 0, 0, 1] == 0
     assert attn.bias[0, 0, 1, 0] == 1
 
-@pytest.mark.skip(reason="remove this line when you start milestone 4")
 def test_milestone_4():
-    raise NotImplementedError("write the test for milestone 4")
+    model, losses = milestone_4()
+    assert isinstance(model, GPTModel)
+    assert len(losses) > 0
+    x = torch.randint(0, len(model.embeddings.tok_embed.weight), (2, 8))
+    y = torch.randint(0, len(model.embeddings.tok_embed.weight), (2, 8))
+    logits, loss = model(x, y)
+    assert logits.shape == (2, 8, len(model.embeddings.tok_embed.weight))
+    assert loss is not None
+    assert loss.item() > 0
 
 @pytest.mark.skip(reason="remove this line when you start milestone 5")
 def test_milestone_5():

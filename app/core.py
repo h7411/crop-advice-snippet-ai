@@ -215,8 +215,81 @@ def milestone_3() -> TransformerBlock:
     return TransformerBlock(d_model=32, n_heads=4, block_size=64)
 
 
-def milestone_4():
-    raise NotImplementedError("TODO(milestone 4)")
+
+import random
+from typing import Optional
+
+class GPTModel(nn.Module):
+    def __init__(
+        self,
+        vocab_size: int,
+        d_model: int = 32,
+        n_heads: int = 4,
+        n_layers: int = 2,
+        block_size: int = 64,
+        dropout: float = 0.0,
+    ):
+        super().__init__()
+        self.block_size = block_size
+        self.embeddings = GPTEmbeddings(vocab_size, d_model, block_size)
+        self.blocks = nn.ModuleList(
+            [TransformerBlock(d_model, n_heads, block_size, dropout) for _ in range(n_layers)]
+        )
+        self.ln_f = nn.LayerNorm(d_model)
+        self.lm_head = nn.Linear(d_model, vocab_size, bias=False)
+
+    def forward(
+        self, idx: torch.Tensor, targets: Optional[torch.Tensor] = None
+    ) -> Tuple[torch.Tensor, Optional[torch.Tensor]]:
+        b, t = idx.size()
+        x = self.embeddings(idx)
+        for block in self.blocks:
+            x = block(x)
+        x = self.ln_f(x)
+        logits = self.lm_head(x)
+
+        loss = None
+        if targets is not None:
+            loss = F.cross_entropy(logits.view(-1, logits.size(-1)), targets.view(-1))
+        return logits, loss
+
+def train_gpt_model(
+    model: GPTModel,
+    data_ids: List[int],
+    steps: int = 30,
+    batch_size: int = 4,
+    lr: float = 3e-3,
+) -> List[float]:
+    optimizer = torch.optim.AdamW(model.parameters(), lr=lr)
+    losses: List[float] = []
+    block_size = model.block_size
+
+    if len(data_ids) <= block_size + 1:
+        data_ids = data_ids * ((block_size + 2) // len(data_ids) + 1)
+
+    model.train()
+    for _ in range(steps):
+        ix = [random.randint(0, len(data_ids) - block_size - 1) for _ in range(batch_size)]
+        x = torch.stack([torch.tensor(data_ids[i : i + block_size], dtype=torch.long) for i in ix])
+        y = torch.stack(
+            [torch.tensor(data_ids[i + 1 : i + block_size + 1], dtype=torch.long) for i in ix]
+        )
+        optimizer.zero_grad()
+        _, loss = model(x, y)
+        loss.backward()
+        optimizer.step()
+        losses.append(loss.item())
+
+    return losses
+
+def milestone_4() -> Tuple[GPTModel, List[float]]:
+    tokenizer, _ = milestone_2()
+    corpus = milestone_1()
+    token_ids = tokenizer.encode(corpus.cleaned_text)
+    model = GPTModel(vocab_size=len(tokenizer.vocab), d_model=32, n_heads=4, n_layers=2, block_size=32)
+    losses = train_gpt_model(model, token_ids, steps=15, batch_size=4)
+    return model, losses
+
 
 def milestone_5():
     raise NotImplementedError("TODO(milestone 5)")
