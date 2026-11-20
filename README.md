@@ -22,7 +22,7 @@ Tick these off as you go, and commit after each one.
       Hint: Implement the causal self-attention mechanism and assemble the transformer block.
 - [x] **4. Train the GPT model using the agricultural text data.**  
       Hint: Train your custom GPT model using the prepared agricultural text data.
-- [ ] **5. Implement a text generation function to provide concise advice snippets.**  
+- [x] **5. Implement a text generation function to provide concise advice snippets.**  
       Hint: Develop the text generation function to produce advice snippets.
 - [ ] **6. Create a CLI where users can input a crop or problem and get advice.**  
       Hint: Build the command-line interface for user interaction and advice retrieval.

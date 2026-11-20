@@ -56,9 +56,10 @@ def test_milestone_4():
     assert loss is not None
     assert loss.item() > 0
 
-@pytest.mark.skip(reason="remove this line when you start milestone 5")
 def test_milestone_5():
-    raise NotImplementedError("write the test for milestone 5")
+    snippet = milestone_5("Wheat rust")
+    assert isinstance(snippet, str)
+    assert len(snippet) > 0
 
 @pytest.mark.skip(reason="remove this line when you start milestone 6")
 def test_milestone_6():

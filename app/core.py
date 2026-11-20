@@ -291,8 +291,38 @@ def milestone_4() -> Tuple[GPTModel, List[float]]:
     return model, losses
 
 
-def milestone_5():
-    raise NotImplementedError("TODO(milestone 5)")
+
+def generate_snippet(
+    model: GPTModel,
+    tokenizer: BPETokenizer,
+    prompt: str,
+    max_new_tokens: int = 25,
+    temperature: float = 0.8,
+) -> str:
+    model.eval()
+    tokens = tokenizer.encode(prompt)
+    if not tokens:
+        tokens = [0]
+    idx = torch.tensor(tokens, dtype=torch.long).unsqueeze(0)
+    block_size = model.block_size
+
+    with torch.no_grad():
+        for _ in range(max_new_tokens):
+            idx_cond = idx[:, -block_size:] if idx.size(1) > block_size else idx
+            logits, _ = model(idx_cond)
+            logits = logits[:, -1, :] / max(temperature, 1e-5)
+            probs = F.softmax(logits, dim=-1)
+            next_token = torch.multinomial(probs, num_samples=1)
+            idx = torch.cat((idx, next_token), dim=1)
+
+    output_ids = idx[0].tolist()
+    return tokenizer.decode(output_ids)
+
+def milestone_5(prompt: str = "Wheat rust") -> str:
+    model, _ = milestone_4()
+    tokenizer, _ = milestone_2()
+    return generate_snippet(model, tokenizer, prompt, max_new_tokens=20)
+
 
 def milestone_6():
     raise NotImplementedError("TODO(milestone 6)")
