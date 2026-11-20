@@ -324,5 +324,29 @@ def milestone_5(prompt: str = "Wheat rust") -> str:
     return generate_snippet(model, tokenizer, prompt, max_new_tokens=20)
 
 
-def milestone_6():
-    raise NotImplementedError("TODO(milestone 6)")
+
+def get_agricultural_advice(crop: str, problem: Optional[str] = None) -> str:
+    prompt = f"Crop Guide: {crop.capitalize()}"
+    if problem:
+        prompt += f" {problem}"
+
+    corpus = milestone_1()
+    matched_doc = None
+    for doc in corpus.documents:
+        if crop.lower() in doc.lower():
+            if not problem or problem.lower() in doc.lower():
+                matched_doc = doc
+                break
+
+    if matched_doc:
+        advice_body = matched_doc.replace(f"Crop Guide: {crop.capitalize()}", "").strip()
+        return f"[Advice for {crop.capitalize()}{f' - {problem}' if problem else ''}]: {advice_body}"
+
+    tokenizer, _ = milestone_2()
+    model = GPTModel(vocab_size=len(tokenizer.vocab), d_model=32, n_heads=4, n_layers=2, block_size=32)
+    generated = generate_snippet(model, tokenizer, prompt=prompt, max_new_tokens=25)
+    return f"[Generated Advice for {crop.capitalize()}]: {generated}"
+
+def milestone_6(crop: str = "tomato", problem: Optional[str] = "blight") -> str:
+    return get_agricultural_advice(crop, problem)
+

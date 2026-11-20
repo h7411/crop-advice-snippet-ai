@@ -61,6 +61,10 @@ def test_milestone_5():
     assert isinstance(snippet, str)
     assert len(snippet) > 0
 
-@pytest.mark.skip(reason="remove this line when you start milestone 6")
 def test_milestone_6():
-    raise NotImplementedError("write the test for milestone 6")
+    advice_tomato = milestone_6("tomato", "blight")
+    assert "Tomato" in advice_tomato
+    assert "blight" in advice_tomato.lower()
+    advice_wheat = get_agricultural_advice("wheat", "rust")
+    assert "Wheat" in advice_wheat
+    assert len(advice_wheat) > 10
