@@ -8,7 +8,7 @@ This project involves building a custom GPT model from scratch to provide agricu
 
 **Goal.** You will build a Command-Line Interface (CLI) tool that generates concise, context-aware agricultural advice snippets for specific crops, trained on a dataset of farming best practices.
 
-**Done when.** Your CLI tool successfully generates relevant and concise agricultural advice snippets for specific crops or problems, demonstrating the ability to apply a custom-trained GPT model from scratch.
+**Done when.** Your CLI tool successfully generates relevant and concise agricultural advice snippets for specific crops or problems, demonstrating the ability to apply a custom-trained GPT modell from scratch.
 
 ## Milestones
 
